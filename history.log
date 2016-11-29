@@ -6,3 +6,27 @@ aws ec2 help
 aws ec2 describe-instances help
 aws ec2 describe-images
 aws ec2 describe-images --query Images[0].ImageId
+aws cloudformation describe-stacks
+aws cloudformation delete-stack --stack-name vpn
+
+aws elasticbeanstalk create-application --application-name etherpad
+
+aws elasticbeanstalk create-application-version \
+--application-name etherpad --version-label 1.5.2 \
+--source-bundle S3Bucket=awsinaction,S3Key=chapter5/etherpad.zip
+
+aws elasticbeanstalk list-available-solution-stacks --output text \
+--query "SolutionStacks[?contains(@, 'running Node.js')] | [0]"
+
+aws elasticbeanstalk create-environment --environment-name etherpad \
+--application-name etherpad \
+--option-settings Namespace=aws:elasticbeanstalk:environment,\
+OptionName=EnvironmentType,Value=SingleInstance \
+--solution-stack-name "$SolutionStackName" \
+--version-label 1.5.2
+
+aws elasticbeanstalk describe-environments --environment-names etherpad
+
+aws elasticbeanstalk terminate-environment --environment-name etherpad
+
+aws elasticbeanstalk delete-application --application-name etherpad
