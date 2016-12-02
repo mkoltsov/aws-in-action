@@ -30,3 +30,17 @@ aws elasticbeanstalk describe-environments --environment-names etherpad
 aws elasticbeanstalk terminate-environment --environment-name etherpad
 
 aws elasticbeanstalk delete-application --application-name etherpad
+
+aws iam get-user --query "User.Arn" --output text
+
+ aws iam attach-group-policy --group-name "admin" \
+--policy-arn "arn:aws:iam::aws:policy/AdministratorAccess"
+
+aws iam create-user --user-name "myuser"
+aws iam create-group --group-name "admin"
+
+aws iam add-user-to-group --group-name "admin" --user-name "myuser"
+
+aws iam create-login-profile --user-name "myuser" --password "$Password"
+
+echo "aws ec2 stop-instances --instance-ids i-3dd4f812" | at now + 5 minutes
