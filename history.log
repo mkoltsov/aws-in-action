@@ -44,3 +44,9 @@ aws iam add-user-to-group --group-name "admin" --user-name "myuser"
 aws iam create-login-profile --user-name "myuser" --password "$Password"
 
 echo "aws ec2 stop-instances --instance-ids i-3dd4f812" | at now + 5 minutes
+
+ aws s3 rb --force s3://awsinaction-$YourName
+
+ aws s3 cp helloworld.html s3://ru.javabean.content/helloworld.html
+
+ aws s3 website s3://ru.javabean.content --index-document helloworld.html
