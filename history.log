@@ -49,4 +49,51 @@ echo "aws ec2 stop-instances --instance-ids i-3dd4f812" | at now + 5 minutes
 
  aws s3 cp helloworld.html s3://ru.javabean.content/helloworld.html
 
- aws s3 website s3://ru.javabean.content --index-document helloworld.html
+ aws s3 website s3://ru.javabean.content --index-document helloworld.html	
+
+ aws cloudformation create-stack --stack-name wordpress --template-url \
+https://s3.amazonaws.com/awsinaction/chapter9/template.json \
+--parameters ParameterKey=KeyName,ParameterValue=mykey \
+ParameterKey=AdminPassword,ParameterValue=test1234 \
+ParameterKey=AdminEMail,ParameterValue=your@mail.com
+
+aws cloudformation describe-stacks --stack-name wordpress
+
+aws rds describe-db-instances
+
+aws ec2 describe-instances --filters Name=tag-key,\
+Values=aws:cloudformation:stack-name Name=tag-value,\
+Values=wordpress --output text \
+--query Reservations[0].Instances[0].PublicIpAddress
+
+aws rds describe-db-instances --query DBInstances[0].Endpoint
+
+aws rds create-db-snapshot --db-snapshot-identifier \
+wordpress-manual-snapshot \
+--db-instance-identifier awsinaction-db
+
+ aws rds describe-db-snapshots \
+--db-snapshot-identifier wordpress-manual-snapshot
+
+ aws cloudformation describe-stack-resource \
+--stack-name wordpress --logical-resource-id DBSubnetGroup \
+--query StackResourceDetail.PhysicalResourceId --output text
+
+aws rds restore-db-instance-from-db-snapshot \
+--db-instance-identifier awsinaction-db-restore \
+--db-snapshot-identifier wordpress-manual-snapshot \
+--db-subnet-group-name $SubnetGroup
+
+aws rds restore-db-instance-to-point-in-time \
+--target-db-instance-identifier awsinaction-db-restore-time \
+--source-db-instance-identifier awsinaction-db \
+--restore-time $Time --db-subnet-group-name $SubnetGroup
+
+aws cloudformation update-stack --stack-name wordpress --template-url \
+https://s3.amazonaws.com/awsinaction/chapter9/template-multiaz.json \
+--parameters ParameterKey=KeyName,UsePreviousValue=true \
+ParameterKey=AdminPassword,UsePreviousValue=true \
+ParameterKey=AdminEMail,UsePreviousValue=true
+
+aws rds delete-db-instance --db-instance-identifier \
+awsinaction-db-read --skip-final-snapshot
