@@ -45,6 +45,14 @@ aws iam create-login-profile --user-name "myuser" --password "$Password"
 
 echo "aws ec2 stop-instances --instance-ids i-3dd4f812" | at now + 5 minutes
 
+aws s3 mb s3://awsinaction-intimatik
+
+aws s3 sync . s3://awsinaction-intimatik/backup
+
+aws s3 sync . s3://awsinaction-intimatik/backup
+
+echo "aws ec2 stop-instances --instance-ids i-3dd4f812" | at now + 5 minutes
+
  aws s3 rb --force s3://awsinaction-$YourName
 
  aws s3 cp helloworld.html s3://ru.javabean.content/helloworld.html
@@ -97,3 +105,21 @@ ParameterKey=AdminEMail,UsePreviousValue=true
 
 aws rds delete-db-instance --db-instance-identifier \
 awsinaction-db-read --skip-final-snapshot
+
+aws iam upload-server-certificate \
+--server-certificate-name my-ssl-cert \
+--certificate-body file://my-certificate.pem \
+--private-key file://my-private-key.pem \
+--certificate-chain file://my-certificate-chain.pem
+
+aws s3 mb s3://elb-logging-bucket-$YourName
+$ aws s3api put-bucket-policy --bucket elb-logging-bucket-$YourName \
+--policy file://policy.json
+
+aws s3 mb s3://url2png-$YourName
+$ aws s3 website s3://url2png-$YourName --index-document index.html \
+--error-document error.html
+
+aws sqs create-queue --queue-name url2png
+
+aws autoscaling put-scheduled-update-group-action
